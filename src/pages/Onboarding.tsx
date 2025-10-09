@@ -3,18 +3,29 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useNavigate } from "react-router-dom";
-import { Shield, Heart, Users } from "lucide-react";
+import { Shield, Heart, Users, User, Smile, Star, Sparkles, Sun, Moon } from "lucide-react";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import iconCare from "@/assets/icon-care.png";
 
 export default function Onboarding() {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [ageGroup, setAgeGroup] = useState("");
+  const [selectedAvatar, setSelectedAvatar] = useState("");
   const [consents, setConsents] = useState({
     peerChat: false,
     faithSupport: false,
     dailyReflections: false,
   });
+
+  const avatarOptions = [
+    { id: "user", icon: User, color: "bg-primary/20 text-primary" },
+    { id: "smile", icon: Smile, color: "bg-accent/20 text-accent" },
+    { id: "star", icon: Star, color: "bg-sanctuary/20 text-sanctuary" },
+    { id: "sparkles", icon: Sparkles, color: "bg-primary/20 text-primary" },
+    { id: "sun", icon: Sun, color: "bg-accent/20 text-accent" },
+    { id: "moon", icon: Moon, color: "bg-sanctuary/20 text-sanctuary" },
+  ];
 
   const handleComplete = () => {
     navigate("/home");
@@ -94,6 +105,32 @@ export default function Onboarding() {
             </div>
 
             <div>
+              <h3 className="text-sm font-medium mb-3">Choose Your Avatar</h3>
+              <div className="grid grid-cols-6 gap-2">
+                {avatarOptions.map((avatar) => {
+                  const Icon = avatar.icon;
+                  return (
+                    <button
+                      key={avatar.id}
+                      onClick={() => setSelectedAvatar(avatar.id)}
+                      className={`relative transition-all ${
+                        selectedAvatar === avatar.id ? "scale-110" : "hover:scale-105"
+                      }`}
+                    >
+                      <Avatar className={`w-12 h-12 ${avatar.color} ${
+                        selectedAvatar === avatar.id ? "ring-2 ring-primary ring-offset-2" : ""
+                      }`}>
+                        <AvatarFallback className={avatar.color}>
+                          <Icon className="w-6 h-6" />
+                        </AvatarFallback>
+                      </Avatar>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div>
               <h3 className="text-sm font-medium mb-3">Optional Features (you can change these later)</h3>
               <div className="space-y-3">
                 <label className="flex items-start gap-3 cursor-pointer">
@@ -145,7 +182,7 @@ export default function Onboarding() {
                 onClick={handleComplete} 
                 variant="sanctuary" 
                 className="flex-1"
-                disabled={!ageGroup}
+                disabled={!ageGroup || !selectedAvatar}
               >
                 Get Started
               </Button>
