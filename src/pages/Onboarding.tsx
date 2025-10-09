@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
 import { useNavigate } from "react-router-dom";
 import { Shield, Heart, Users, User, Smile, Star, Sparkles, Sun, Moon } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -12,11 +11,6 @@ export default function Onboarding() {
   const [step, setStep] = useState(1);
   const [ageGroup, setAgeGroup] = useState("");
   const [selectedAvatar, setSelectedAvatar] = useState("");
-  const [consents, setConsents] = useState({
-    peerChat: false,
-    faithSupport: false,
-    dailyReflections: false,
-  });
 
   const avatarOptions = [
     { id: "user", icon: User, color: "bg-primary/20 text-primary" },
@@ -127,50 +121,6 @@ export default function Onboarding() {
                     </button>
                   );
                 })}
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-sm font-medium mb-3">Optional Features (you can change these later)</h3>
-              <div className="space-y-3">
-                <label className="flex items-start gap-3 cursor-pointer">
-                  <Checkbox 
-                    checked={consents.peerChat}
-                    onCheckedChange={(checked) => 
-                      setConsents({...consents, peerChat: checked as boolean})
-                    }
-                  />
-                  <div className="flex-1">
-                    <span className="text-sm font-medium">Anonymous Peer Chat</span>
-                    <p className="text-xs text-muted-foreground">Connect with others safely</p>
-                  </div>
-                </label>
-
-                <label className="flex items-start gap-3 cursor-pointer">
-                  <Checkbox 
-                    checked={consents.faithSupport}
-                    onCheckedChange={(checked) => 
-                      setConsents({...consents, faithSupport: checked as boolean})
-                    }
-                  />
-                  <div className="flex-1">
-                    <span className="text-sm font-medium">Faith Support</span>
-                    <p className="text-xs text-muted-foreground">Access spiritual guidance</p>
-                  </div>
-                </label>
-
-                <label className="flex items-start gap-3 cursor-pointer">
-                  <Checkbox 
-                    checked={consents.dailyReflections}
-                    onCheckedChange={(checked) => 
-                      setConsents({...consents, dailyReflections: checked as boolean})
-                    }
-                  />
-                  <div className="flex-1">
-                    <span className="text-sm font-medium">Daily Reflections</span>
-                    <p className="text-xs text-muted-foreground">Gentle reminders & prompts</p>
-                  </div>
-                </label>
               </div>
             </div>
 
