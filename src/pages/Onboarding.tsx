@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
-import { Shield, Heart, Users, User, Smile, Star, Sparkles, Sun, Moon } from "lucide-react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Shield, Heart, Users, User, Smile, Star, Sparkles, Sun, Moon, Upload } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Input } from "@/components/ui/input";
 import iconCare from "@/assets/icon-care.png";
 
 export default function Onboarding() {
@@ -11,6 +12,8 @@ export default function Onboarding() {
   const [step, setStep] = useState(1);
   const [ageGroup, setAgeGroup] = useState("");
   const [selectedAvatar, setSelectedAvatar] = useState("");
+  const [customAvatar, setCustomAvatar] = useState<string>("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const avatarOptions = [
     { id: "user", icon: User, color: "bg-primary/20 text-primary" },
@@ -20,6 +23,18 @@ export default function Onboarding() {
     { id: "sun", icon: Sun, color: "bg-accent/20 text-accent" },
     { id: "moon", icon: Moon, color: "bg-sanctuary/20 text-sanctuary" },
   ];
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setCustomAvatar(reader.result as string);
+        setSelectedAvatar("custom");
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleComplete = () => {
     navigate("/home");
@@ -121,6 +136,33 @@ export default function Onboarding() {
                     </button>
                   );
                 })}
+                
+                {/* Custom Avatar Upload */}
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className={`relative transition-all ${
+                    selectedAvatar === "custom" ? "scale-110" : "hover:scale-105"
+                  }`}
+                >
+                  <Avatar className={`w-12 h-12 ${
+                    selectedAvatar === "custom" ? "ring-2 ring-primary ring-offset-2" : ""
+                  }`}>
+                    {customAvatar ? (
+                      <AvatarImage src={customAvatar} alt="Custom avatar" />
+                    ) : (
+                      <AvatarFallback className="bg-accent/20 text-accent">
+                        <Upload className="w-6 h-6" />
+                      </AvatarFallback>
+                    )}
+                  </Avatar>
+                </button>
+                <Input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
               </div>
             </div>
 
