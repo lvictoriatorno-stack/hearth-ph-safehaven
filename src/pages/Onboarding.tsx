@@ -37,7 +37,7 @@ export default function Onboarding() {
   };
 
   const handleComplete = () => {
-    navigate("/home");
+    navigate("/auth");
   };
 
   return (
