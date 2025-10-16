@@ -14,16 +14,193 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      moderation_flags: {
+        Row: {
+          created_at: string | null
+          id: string
+          reason: string | null
+          reply_id: string | null
+          reporter_user_id: string | null
+          status: string | null
+          thread_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          reason?: string | null
+          reply_id?: string | null
+          reporter_user_id?: string | null
+          status?: string | null
+          thread_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          reason?: string | null
+          reply_id?: string | null
+          reporter_user_id?: string | null
+          status?: string | null
+          thread_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "moderation_flags_reply_id_fkey"
+            columns: ["reply_id"]
+            isOneToOne: false
+            referencedRelation: "thread_replies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "moderation_flags_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "threads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      thread_replies: {
+        Row: {
+          alias_id: string
+          content: string
+          created_at: string | null
+          id: string
+          mood: Database["public"]["Enums"]["mood_type"] | null
+          thread_id: string
+          user_id: string
+        }
+        Insert: {
+          alias_id: string
+          content: string
+          created_at?: string | null
+          id?: string
+          mood?: Database["public"]["Enums"]["mood_type"] | null
+          thread_id: string
+          user_id: string
+        }
+        Update: {
+          alias_id?: string
+          content?: string
+          created_at?: string | null
+          id?: string
+          mood?: Database["public"]["Enums"]["mood_type"] | null
+          thread_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "thread_replies_alias_id_fkey"
+            columns: ["alias_id"]
+            isOneToOne: false
+            referencedRelation: "user_aliases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "thread_replies_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "threads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      threads: {
+        Row: {
+          alias_id: string
+          content: string
+          created_at: string | null
+          id: string
+          is_approved: boolean | null
+          is_flagged: boolean | null
+          is_under_review: boolean | null
+          mood: Database["public"]["Enums"]["mood_type"]
+          tag: Database["public"]["Enums"]["thread_tag"] | null
+          updated_at: string | null
+          user_id: string
+          warm_replies_count: number | null
+        }
+        Insert: {
+          alias_id: string
+          content: string
+          created_at?: string | null
+          id?: string
+          is_approved?: boolean | null
+          is_flagged?: boolean | null
+          is_under_review?: boolean | null
+          mood: Database["public"]["Enums"]["mood_type"]
+          tag?: Database["public"]["Enums"]["thread_tag"] | null
+          updated_at?: string | null
+          user_id: string
+          warm_replies_count?: number | null
+        }
+        Update: {
+          alias_id?: string
+          content?: string
+          created_at?: string | null
+          id?: string
+          is_approved?: boolean | null
+          is_flagged?: boolean | null
+          is_under_review?: boolean | null
+          mood?: Database["public"]["Enums"]["mood_type"]
+          tag?: Database["public"]["Enums"]["thread_tag"] | null
+          updated_at?: string | null
+          user_id?: string
+          warm_replies_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "threads_alias_id_fkey"
+            columns: ["alias_id"]
+            isOneToOne: false
+            referencedRelation: "user_aliases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_aliases: {
+        Row: {
+          alias: string
+          created_at: string | null
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          alias: string
+          created_at?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          alias?: string
+          created_at?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      generate_unique_alias: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
     }
     Enums: {
-      [_ in never]: never
+      mood_type:
+        | "hopeful"
+        | "grateful"
+        | "angry"
+        | "tired"
+        | "healing"
+        | "resilient"
+      thread_tag:
+        | "treatment_wins"
+        | "faith_and_healing"
+        | "just_venting"
+        | "none"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +327,21 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      mood_type: [
+        "hopeful",
+        "grateful",
+        "angry",
+        "tired",
+        "healing",
+        "resilient",
+      ],
+      thread_tag: [
+        "treatment_wins",
+        "faith_and_healing",
+        "just_venting",
+        "none",
+      ],
+    },
   },
 } as const
