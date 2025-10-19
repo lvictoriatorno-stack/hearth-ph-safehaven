@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Heart, Flag } from "lucide-react";
+import { Heart, Flag, Trash2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
 interface ThreadCardProps {
@@ -11,8 +11,11 @@ interface ThreadCardProps {
   tag?: string;
   warmRepliesCount: number;
   createdAt: string;
+  userId?: string;
+  currentUserId?: string;
   onClick?: () => void;
   onReport?: () => void;
+  onDelete?: () => void;
 }
 
 const moodEmojis: Record<string, string> = {
@@ -47,9 +50,13 @@ export const ThreadCard = ({
   tag,
   warmRepliesCount,
   createdAt,
+  userId,
+  currentUserId,
   onClick,
   onReport,
+  onDelete,
 }: ThreadCardProps) => {
+  const isOwner = userId && currentUserId && userId === currentUserId;
   return (
     <Card
       className="p-4 cursor-pointer hover:bg-accent/5 transition-all"
@@ -83,18 +90,34 @@ export const ThreadCard = ({
             {warmRepliesCount} warm {warmRepliesCount === 1 ? "reply" : "replies"}
           </span>
         </div>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={(e) => {
-            e.stopPropagation();
-            onReport?.();
-          }}
-          className="h-auto py-1 px-2"
-        >
-          <Flag className="h-3 w-3 mr-1" />
-          <span className="text-xs">Report</span>
-        </Button>
+        <div className="flex gap-1">
+          {isOwner && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete?.();
+              }}
+              className="h-auto py-1 px-2 text-destructive hover:text-destructive"
+            >
+              <Trash2 className="h-3 w-3 mr-1" />
+              <span className="text-xs">Delete</span>
+            </Button>
+          )}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              onReport?.();
+            }}
+            className="h-auto py-1 px-2"
+          >
+            <Flag className="h-3 w-3 mr-1" />
+            <span className="text-xs">Report</span>
+          </Button>
+        </div>
       </div>
     </Card>
   );

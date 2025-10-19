@@ -13,6 +13,7 @@ export default function Threads() {
   const [threads, setThreads] = useState<any[]>([]);
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [userAlias, setUserAlias] = useState<any>(null);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -29,6 +30,8 @@ export default function Threads() {
       navigate("/");
       return;
     }
+
+    setCurrentUserId(session.user.id);
 
     // Get user's alias
     const { data: alias } = await supabase
@@ -130,6 +133,31 @@ export default function Threads() {
     }
   };
 
+  const handleDelete = async (threadId: string) => {
+    try {
+      const { error } = await supabase
+        .from("threads")
+        .delete()
+        .eq("id", threadId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Deleted",
+        description: "Your thread has been deleted.",
+      });
+
+      fetchThreads();
+    } catch (error) {
+      console.error("Error deleting thread:", error);
+      toast({
+        title: "Error",
+        description: "Failed to delete thread",
+        variant: "destructive",
+      });
+    }
+  };
+
   const handleReport = async (threadId: string) => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
@@ -202,8 +230,11 @@ export default function Threads() {
                 tag={thread.tag}
                 warmRepliesCount={thread.warm_replies_count}
                 createdAt={thread.created_at}
+                userId={thread.user_id}
+                currentUserId={currentUserId || undefined}
                 onClick={() => navigate(`/thread/${thread.id}`)}
                 onReport={() => handleReport(thread.id)}
+                onDelete={() => handleDelete(thread.id)}
               />
             ))}
           </div>

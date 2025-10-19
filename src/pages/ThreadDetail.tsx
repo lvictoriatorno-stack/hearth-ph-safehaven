@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Heart, Send } from "lucide-react";
+import { ArrowLeft, Heart, Send, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
@@ -109,6 +109,56 @@ export default function ThreadDetail() {
     }
   };
 
+  const handleDeleteThread = async () => {
+    try {
+      const { error } = await supabase
+        .from("threads")
+        .delete()
+        .eq("id", id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Deleted",
+        description: "Your thread has been deleted.",
+      });
+
+      navigate("/threads");
+    } catch (error) {
+      console.error("Error deleting thread:", error);
+      toast({
+        title: "Error",
+        description: "Failed to delete thread",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDeleteReply = async (replyId: string) => {
+    try {
+      const { error } = await supabase
+        .from("thread_replies")
+        .delete()
+        .eq("id", replyId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Deleted",
+        description: "Your reply has been deleted.",
+      });
+
+      fetchReplies();
+    } catch (error) {
+      console.error("Error deleting reply:", error);
+      toast({
+        title: "Error",
+        description: "Failed to delete reply",
+        variant: "destructive",
+      });
+    }
+  };
+
   const handleReply = async () => {
     if (!replyContent.trim() || !userAlias) return;
 
@@ -186,11 +236,24 @@ export default function ThreadDetail() {
             </span>
           </div>
           <p className="text-sm mb-3">{thread.content}</p>
-          <div className="flex items-center gap-1 text-primary">
-            <Heart className="h-4 w-4" />
-            <span className="text-xs font-medium">
-              {thread.warm_replies_count} warm {thread.warm_replies_count === 1 ? "reply" : "replies"}
-            </span>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1 text-primary">
+              <Heart className="h-4 w-4" />
+              <span className="text-xs font-medium">
+                {thread.warm_replies_count} warm {thread.warm_replies_count === 1 ? "reply" : "replies"}
+              </span>
+            </div>
+            {userAlias && thread.user_id === userAlias.user_id && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleDeleteThread}
+                className="h-auto py-1 px-2 text-destructive hover:text-destructive"
+              >
+                <Trash2 className="h-3 w-3 mr-1" />
+                <span className="text-xs">Delete</span>
+              </Button>
+            )}
           </div>
         </Card>
 
@@ -213,10 +276,22 @@ export default function ThreadDetail() {
           {replies.map((reply) => (
             <Card key={reply.id} className="p-4">
               <div className="flex justify-between items-start mb-2">
-                <span className="font-semibold text-sm">{reply.user_aliases.alias}</span>
-                <span className="text-xs text-muted-foreground">
-                  {formatDistanceToNow(new Date(reply.created_at), { addSuffix: true })}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold text-sm">{reply.user_aliases.alias}</span>
+                  <span className="text-xs text-muted-foreground">
+                    {formatDistanceToNow(new Date(reply.created_at), { addSuffix: true })}
+                  </span>
+                </div>
+                {userAlias && reply.user_id === userAlias.user_id && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleDeleteReply(reply.id)}
+                    className="h-auto py-1 px-2 text-destructive hover:text-destructive"
+                  >
+                    <Trash2 className="h-3 w-3" />
+                  </Button>
+                )}
               </div>
               <p className="text-sm text-muted-foreground">{reply.content}</p>
             </Card>
