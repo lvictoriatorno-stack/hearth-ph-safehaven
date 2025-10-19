@@ -1,29 +1,58 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BottomNav } from "@/components/BottomNav";
-import { Phone, Heart, MapPin, Shield, AlertCircle } from "lucide-react";
+import { Phone, Heart, MapPin, Shield, AlertCircle, MessageCircle } from "lucide-react";
 
-const crisisOptions = [
+const crisisHotlines = [
   {
-    title: "Emotional Support",
-    description: "Talk to a trained counselor now",
+    title: "NCMH Crisis Hotline",
+    description: "24/7 mental health emergency support",
     icon: Heart,
-    color: "bg-blue-500",
-    action: "NCMH Crisis Hotline: 0917-899-USAP (8727)",
+    color: "text-blue-500",
+    phone: "09178998727",
+    display: "0917-899-USAP (8727)",
   },
   {
-    title: "Medical Help",
-    description: "Connect to HIV care services",
-    icon: MapPin,
-    color: "bg-green-500",
-    action: "Find nearest DOH-accredited clinic",
-  },
-  {
-    title: "Faith Support",
-    description: "Speak with a faith counselor",
+    title: "DOH HIV/AIDS Registry",
+    description: "HIV testing, treatment and counseling",
     icon: Shield,
-    color: "bg-purple-500",
-    action: "Connect with verified faith partners",
+    color: "text-green-500",
+    phone: "0286517800",
+    display: "02-8651-7800",
+  },
+  {
+    title: "Hopeline Philippines",
+    description: "Crisis intervention and suicide prevention",
+    icon: Phone,
+    color: "text-purple-500",
+    phone: "09175584673",
+    display: "0917-558-HOPE (4673)",
+  },
+  {
+    title: "In Touch Community",
+    description: "LGBTQ+ support and counseling",
+    icon: MessageCircle,
+    color: "text-pink-500",
+    phone: "0288937603",
+    display: "(02) 8893-7603",
+  },
+];
+
+const clinicLocations = [
+  {
+    name: "San Lazaro Hospital",
+    address: "Quiricada St, Santa Cruz, Manila",
+    services: "HIV Testing & Treatment",
+  },
+  {
+    name: "Philippine General Hospital",
+    address: "Taft Avenue, Ermita, Manila",
+    services: "HIV Clinic & Counseling",
+  },
+  {
+    name: "Quezon City Health Department",
+    address: "Quezon Avenue, Quezon City",
+    services: "Free HIV Testing",
   },
 ];
 
@@ -58,40 +87,54 @@ export default function Crisis() {
           </div>
         </Card>
 
-        {/* Crisis Options */}
+        {/* Crisis Hotlines */}
         <div className="space-y-4">
-          <h2 className="text-lg font-semibold">Choose Support Type</h2>
-          {crisisOptions.map((option, idx) => {
-            const Icon = option.icon;
+          <h2 className="text-lg font-semibold">24/7 Crisis Hotlines</h2>
+          {crisisHotlines.map((hotline, idx) => {
+            const Icon = hotline.icon;
             return (
-              <Card key={idx} className="p-6 hover:shadow-lg transition-all">
+              <Card key={idx} className="p-5 hover:shadow-lg transition-all">
                 <div className="flex gap-4 items-start mb-4">
-                  <div className={`p-3 rounded-2xl ${option.color} bg-opacity-20`}>
-                    <Icon className={`h-6 w-6`} style={{ color: option.color.replace('bg-', '') }} />
+                  <div className="p-3 rounded-2xl bg-accent">
+                    <Icon className={`h-6 w-6 ${hotline.color}`} />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold mb-1">{option.title}</h3>
-                    <p className="text-sm text-muted-foreground">{option.description}</p>
+                    <h3 className="font-semibold mb-1">{hotline.title}</h3>
+                    <p className="text-sm text-muted-foreground">{hotline.description}</p>
                   </div>
                 </div>
-                <Button variant="crisis" className="w-full">
-                  <Phone className="mr-2 h-4 w-4" />
-                  {option.action}
-                </Button>
+                <a href={`tel:${hotline.phone}`} className="block w-full">
+                  <Button variant="crisis" className="w-full">
+                    <Phone className="mr-2 h-4 w-4" />
+                    Call {hotline.display}
+                  </Button>
+                </a>
               </Card>
             );
           })}
         </div>
 
-        {/* Additional Resources */}
-        <Card className="p-6 bg-muted/30">
-          <h3 className="font-semibold mb-3 text-sm">Other Resources</h3>
-          <ul className="space-y-2 text-sm text-muted-foreground">
-            <li>• DOH HIV/AIDS Registry: 02-8651-7800</li>
-            <li>• Hopeline: 0917-558-HOPE (4673)</li>
-            <li>• In Touch Community Services: (02) 8893-7603</li>
-          </ul>
-        </Card>
+        {/* Nearby Clinics */}
+        <div className="space-y-4">
+          <h2 className="text-lg font-semibold">HIV Care Centers (Metro Manila)</h2>
+          <p className="text-sm text-muted-foreground -mt-2">
+            Walk-in or schedule an appointment for confidential testing and treatment
+          </p>
+          {clinicLocations.map((clinic, idx) => (
+            <Card key={idx} className="p-5">
+              <div className="flex gap-3 items-start mb-3">
+                <MapPin className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                <div className="flex-1">
+                  <h3 className="font-semibold mb-1">{clinic.name}</h3>
+                  <p className="text-sm text-muted-foreground mb-1">{clinic.address}</p>
+                  <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary inline-block">
+                    {clinic.services}
+                  </span>
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
 
         {/* Reassurance */}
         <Card className="p-6 bg-gradient-to-br from-primary/5 to-accent/20">
