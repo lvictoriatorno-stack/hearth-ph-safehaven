@@ -68,6 +68,17 @@ export default function Threads() {
     }
   };
 
+  const checkForFlaggedWords = (text: string): boolean => {
+    const flaggedWords = [
+      'call', 'text', 'phone', 'number', 'contact', 'email', 'address',
+      'suicide', 'kill myself', 'end my life', 'want to die', 'killing myself',
+      'take my life', 'harm myself'
+    ];
+    
+    const lowerText = text.toLowerCase();
+    return flaggedWords.some(word => lowerText.includes(word));
+  };
+
   const handlePostThread = async (content: string, mood: string, tag: string) => {
     if (!userAlias) {
       toast({
@@ -82,20 +93,31 @@ export default function Threads() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) throw new Error("Not authenticated");
 
+      const containsFlaggedWords = checkForFlaggedWords(content);
+
       const { error } = await supabase.from("threads").insert([{
         user_id: session.user.id,
         alias_id: userAlias.id,
         content,
         mood: mood as any,
         tag: tag as any,
+        is_flagged: containsFlaggedWords,
+        is_under_review: containsFlaggedWords,
       }]);
 
       if (error) throw error;
 
-      toast({
-        title: "Posted!",
-        description: "Your words may comfort someone today.",
-      });
+      if (containsFlaggedWords) {
+        toast({
+          title: "Post Under Review",
+          description: "Your post has been submitted for review to ensure community safety.",
+        });
+      } else {
+        toast({
+          title: "Posted!",
+          description: "Your words may comfort someone today.",
+        });
+      }
 
       fetchThreads();
     } catch (error) {
