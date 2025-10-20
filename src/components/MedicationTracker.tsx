@@ -125,28 +125,30 @@ export const MedicationTracker = ({ userId }: MedicationTrackerProps) => {
         </div>
       </div>
 
-      <div className="space-y-3">
-        <Button
-          onClick={handleTaken}
-          disabled={takenToday || loading || !userId}
-          className="w-full"
-          variant={takenToday ? "secondary" : "default"}
-        >
-          <Check className="h-4 w-4 mr-2" />
-          {takenToday ? "Taken today" : "Yes, I've taken it"}
-        </Button>
-        <Button
-          onClick={handleRemindLater}
-          disabled={takenToday || !userId}
-          variant="outline"
-          className="w-full"
-        >
-          <Clock className="h-4 w-4 mr-2" />
-          Remind me later
-        </Button>
+      <div className="space-y-4">
+        <div className="flex flex-col gap-3">
+          <Button
+            onClick={handleTaken}
+            disabled={takenToday || loading || !userId}
+            className="w-full min-h-[44px]"
+            variant={takenToday ? "secondary" : "default"}
+          >
+            <Check className="h-4 w-4 mr-2 flex-shrink-0" />
+            <span className="truncate">{takenToday ? "Taken today" : "Yes, I've taken it"}</span>
+          </Button>
+          <Button
+            onClick={handleRemindLater}
+            disabled={takenToday || !userId}
+            variant="outline"
+            className="w-full min-h-[44px]"
+          >
+            <Clock className="h-4 w-4 mr-2 flex-shrink-0" />
+            <span className="truncate">Remind me later</span>
+          </Button>
+        </div>
 
         {streak > 0 && (
-          <div className="space-y-2 fade-in-up">
+          <div className="space-y-3 pt-2 fade-in-up">
             <div className="flex items-center justify-between text-sm">
               <span className="text-muted-foreground">Adherence streak</span>
               <span className="font-semibold text-primary">
@@ -154,8 +156,8 @@ export const MedicationTracker = ({ userId }: MedicationTrackerProps) => {
               </span>
             </div>
             <Progress value={progressPercentage} className="h-2" />
-            <Link to="/medication-history">
-              <Button variant="ghost" size="sm" className="w-full mt-2">
+            <Link to="/medication-history" className="block">
+              <Button variant="ghost" size="sm" className="w-full">
                 <TrendingUp className="h-4 w-4 mr-2" />
                 View Full History
               </Button>
@@ -164,7 +166,7 @@ export const MedicationTracker = ({ userId }: MedicationTrackerProps) => {
         )}
 
         {!userId && (
-          <p className="text-xs text-muted-foreground text-center">
+          <p className="text-xs text-muted-foreground text-center pt-2">
             Sign in to track your health routine
           </p>
         )}
