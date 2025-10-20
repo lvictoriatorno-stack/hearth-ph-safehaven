@@ -125,27 +125,25 @@ export const MedicationTracker = ({ userId }: MedicationTrackerProps) => {
         </div>
       </div>
 
-      <div className="space-y-4">
-        <div className="flex gap-3">
-          <Button
-            onClick={handleTaken}
-            disabled={takenToday || loading || !userId}
-            className="flex-1"
-            variant={takenToday ? "secondary" : "default"}
-          >
-            <Check className="h-4 w-4 mr-2" />
-            {takenToday ? "Taken today" : "Yes, I've taken it"}
-          </Button>
-          <Button
-            onClick={handleRemindLater}
-            disabled={takenToday || !userId}
-            variant="outline"
-            className="flex-1"
-          >
-            <Clock className="h-4 w-4 mr-2" />
-            Remind me later
-          </Button>
-        </div>
+      <div className="space-y-3">
+        <Button
+          onClick={handleTaken}
+          disabled={takenToday || loading || !userId}
+          className="w-full"
+          variant={takenToday ? "secondary" : "default"}
+        >
+          <Check className="h-4 w-4 mr-2" />
+          {takenToday ? "Taken today" : "Yes, I've taken it"}
+        </Button>
+        <Button
+          onClick={handleRemindLater}
+          disabled={takenToday || !userId}
+          variant="outline"
+          className="w-full"
+        >
+          <Clock className="h-4 w-4 mr-2" />
+          Remind me later
+        </Button>
 
         {streak > 0 && (
           <div className="space-y-2 fade-in-up">
