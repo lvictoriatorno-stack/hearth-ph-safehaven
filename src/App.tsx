@@ -11,6 +11,7 @@ import ThreadDetail from "./pages/ThreadDetail";
 import Learn from "./pages/Learn";
 import Reflect from "./pages/Reflect";
 import Crisis from "./pages/Crisis";
+import SafeScreen from "./pages/SafeScreen";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/learn" element={<Learn />} />
           <Route path="/reflect" element={<Reflect />} />
           <Route path="/crisis" element={<Crisis />} />
+          <Route path="/safe" element={<SafeScreen />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

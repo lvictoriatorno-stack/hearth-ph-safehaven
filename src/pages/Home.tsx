@@ -1,14 +1,35 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { MoodSelector } from "@/components/MoodSelector";
+import { MedicationTracker } from "@/components/MedicationTracker";
+import { EmergencyExit } from "@/components/EmergencyExit";
 import { BottomNav } from "@/components/BottomNav";
 import { Heart, Shield, BookOpen, Users } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import heroImage from "@/assets/hero-sanctuary.jpg";
 
 export default function Home() {
+  const [userId, setUserId] = useState<string | undefined>();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUserId(session?.user?.id);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUserId(session?.user?.id);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
   return (
     <div className="min-h-screen bg-background pb-20">
+      <EmergencyExit />
       {/* Hero Section */}
       <div 
         className="relative h-64 bg-cover bg-center flex items-center justify-center"
@@ -30,8 +51,14 @@ export default function Home() {
         {/* Daily Check-in */}
         <div>
           <h2 className="text-xl font-semibold mb-3">Daily Check-in</h2>
+          <p className="text-sm text-muted-foreground mb-4">
+            Your emotions and health matter. Take a moment for both.
+          </p>
           <MoodSelector />
         </div>
+
+        {/* Health Routine */}
+        <MedicationTracker userId={userId} />
 
         {/* Quick Actions */}
         <div>
