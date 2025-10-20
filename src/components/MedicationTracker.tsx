@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Pill, Check, Clock } from "lucide-react";
+import { Pill, Check, Clock, TrendingUp } from "lucide-react";
+import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -155,6 +156,12 @@ export const MedicationTracker = ({ userId }: MedicationTrackerProps) => {
               </span>
             </div>
             <Progress value={progressPercentage} className="h-2" />
+            <Link to="/medication-history">
+              <Button variant="ghost" size="sm" className="w-full mt-2">
+                <TrendingUp className="h-4 w-4 mr-2" />
+                View Full History
+              </Button>
+            </Link>
           </div>
         )}
 

@@ -12,6 +12,7 @@ import Learn from "./pages/Learn";
 import Reflect from "./pages/Reflect";
 import Crisis from "./pages/Crisis";
 import SafeScreen from "./pages/SafeScreen";
+import MedicationHistory from "./pages/MedicationHistory";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,6 +33,7 @@ const App = () => (
           <Route path="/reflect" element={<Reflect />} />
           <Route path="/crisis" element={<Crisis />} />
           <Route path="/safe" element={<SafeScreen />} />
+          <Route path="/medication-history" element={<MedicationHistory />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
