@@ -9,27 +9,29 @@ import { Heart, ChevronLeft, Settings } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { subDays, startOfDay, endOfDay, differenceInDays } from "date-fns";
+import { useLanguage } from "@/contexts/LanguageContext";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 
-const dailyAffirmations = [
-  "Healing isn't linear — consistency builds courage.",
-  "Every dose is a step toward your strongest self.",
-  "You're not just surviving, you're thriving.",
-  "Small actions create lasting change.",
-  "Your health journey is yours alone — honor it.",
-];
-
 export default function MedicationHistory() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [userId, setUserId] = useState<string | undefined>();
   const [streak, setStreak] = useState(0);
   const [weeklyData, setWeeklyData] = useState<any[]>([]);
   const [monthlyPercentage, setMonthlyPercentage] = useState(0);
   const [affirmation, setAffirmation] = useState("");
+
+  const dailyAffirmations = [
+    t('medHistory.affirmation1'),
+    t('medHistory.affirmation2'),
+    t('medHistory.affirmation3'),
+    t('medHistory.affirmation4'),
+    t('medHistory.affirmation5'),
+  ];
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -168,11 +170,11 @@ export default function MedicationHistory() {
             <Heart className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold">Your Health Progress</h1>
+            <h1 className="text-2xl font-bold">{t('medHistory.title')}</h1>
           </div>
         </div>
         <p className="text-muted-foreground text-sm mt-2">
-          Small steps, strong foundations. Every dose matters.
+          {t('medHistory.subtitle')}
         </p>
       </div>
 
@@ -182,8 +184,7 @@ export default function MedicationHistory() {
         <Card className="p-6 shadow-lg fade-in-up">
           <AdherenceRing streak={streak} percentage={adherencePercentage} />
           <p className="text-center mt-4 text-muted-foreground">
-            You've taken your ART for {streak} {streak === 1 ? "day" : "days"}{" "}
-            in a row.
+            You've taken your ART for {streak} {streak === 1 ? t('med.dayStrong') : t('med.daysStrong')}.
           </p>
           <div className="mt-4 p-4 bg-accent/20 rounded-xl">
             <p className="text-sm italic text-center text-foreground/80">
@@ -194,20 +195,20 @@ export default function MedicationHistory() {
 
         {/* Weekly Timeline */}
         <Card className="p-6 shadow-lg">
-          <h3 className="text-lg font-semibold mb-4">Past 7 Days</h3>
+          <h3 className="text-lg font-semibold mb-4">{t('medHistory.weeklyProgress')}</h3>
           <WeeklyTimeline days={weeklyData} />
           <div className="flex items-center justify-center gap-6 mt-6 text-xs text-muted-foreground">
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full bg-green-500"></div>
-              <span>Taken</span>
+              <span>{t('status.taken')}</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-              <span>Reminder</span>
+              <span>{t('status.reminder')}</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full bg-muted"></div>
-              <span>Missed</span>
+              <span>{t('status.missed')}</span>
             </div>
           </div>
         </Card>
@@ -218,9 +219,9 @@ export default function MedicationHistory() {
             <CollapsibleTrigger className="w-full p-6 text-left hover:bg-accent/5 transition-colors rounded-lg">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-lg font-semibold">Monthly Summary</h3>
+                  <h3 className="text-lg font-semibold">{t('medHistory.monthlySummary')}</h3>
                   <p className="text-sm text-muted-foreground mt-1">
-                    You completed {monthlyPercentage}% this month
+                    {t('medHistory.completedThisMonth')} {monthlyPercentage}% {t('medHistory.thisMonth')}
                   </p>
                 </div>
                 <ChevronLeft className="h-5 w-5 text-muted-foreground transform rotate-[-90deg]" />
@@ -250,19 +251,19 @@ export default function MedicationHistory() {
 
         {/* Motivation / Support */}
         <Card className="p-6 bg-primary/5 border-primary/20 shadow-lg">
-          <h3 className="text-lg font-semibold mb-2">Need Support?</h3>
+          <h3 className="text-lg font-semibold mb-2">{t('medHistory.needHelp')}</h3>
           <p className="text-sm text-muted-foreground mb-4">
             Connect with others on their journey or adjust your reminders.
           </p>
           <div className="flex gap-3">
             <Link to="/threads" className="flex-1">
               <Button variant="outline" className="w-full">
-                Peer Tips
+                {t('medHistory.peerTips')}
               </Button>
             </Link>
             <Button variant="outline" className="flex-1">
               <Settings className="h-4 w-4 mr-2" />
-              Reminders
+              {t('medHistory.setReminders')}
             </Button>
           </div>
         </Card>
@@ -271,7 +272,7 @@ export default function MedicationHistory() {
         <div className="flex gap-3 pt-4">
           <Link to="/home" className="flex-1">
             <Button variant="default" className="w-full">
-              Back to Daily Check-in
+              {t('medHistory.backToCheckIn')}
             </Button>
           </Link>
         </div>

@@ -6,6 +6,7 @@ import { Pill, Check, Clock, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface MedicationTrackerProps {
   userId?: string;
@@ -16,6 +17,7 @@ export const MedicationTracker = ({ userId }: MedicationTrackerProps) => {
   const [streak, setStreak] = useState(0);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   useEffect(() => {
     if (userId) {
@@ -97,8 +99,8 @@ export const MedicationTracker = ({ userId }: MedicationTrackerProps) => {
       setTakenToday(true);
       setStreak(streak + 1);
       toast({
-        title: "Great job!",
-        description: "Your health routine matters. Keep it up!",
+        title: t('med.successTitle'),
+        description: t('med.successMessage'),
       });
     }
     setLoading(false);
@@ -106,8 +108,8 @@ export const MedicationTracker = ({ userId }: MedicationTrackerProps) => {
 
   const handleRemindLater = () => {
     toast({
-      title: "Reminder set",
-      description: "Gentle reminder: staying consistent keeps you strong.",
+      title: t('med.reminderTitle'),
+      description: t('med.reminderMessage'),
     });
   };
 
@@ -120,8 +122,8 @@ export const MedicationTracker = ({ userId }: MedicationTrackerProps) => {
           <Pill className="h-5 w-5 text-primary" />
         </div>
         <div>
-          <h3 className="text-lg font-semibold">Your Health Routine</h3>
-          <p className="text-sm text-muted-foreground">ART Taken Today?</p>
+          <h3 className="text-lg font-semibold">{t('med.title')}</h3>
+          <p className="text-sm text-muted-foreground">{t('med.subtitle')}</p>
         </div>
       </div>
 
@@ -134,7 +136,7 @@ export const MedicationTracker = ({ userId }: MedicationTrackerProps) => {
             variant={takenToday ? "secondary" : "default"}
           >
             <Check className="h-4 w-4 mr-2 flex-shrink-0" />
-            <span className="truncate">{takenToday ? "Taken today" : "Yes, I've taken it"}</span>
+            <span className="truncate">{takenToday ? t('med.takenToday') : t('med.taken')}</span>
           </Button>
           <Button
             onClick={handleRemindLater}
@@ -143,23 +145,23 @@ export const MedicationTracker = ({ userId }: MedicationTrackerProps) => {
             className="w-full min-h-[44px]"
           >
             <Clock className="h-4 w-4 mr-2 flex-shrink-0" />
-            <span className="truncate">Remind me later</span>
+            <span className="truncate">{t('med.remindLater')}</span>
           </Button>
         </div>
 
         {streak > 0 && (
           <div className="space-y-3 pt-2 fade-in-up">
             <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground">Adherence streak</span>
+              <span className="text-muted-foreground">{t('med.streak')}</span>
               <span className="font-semibold text-primary">
-                {streak} {streak === 1 ? "day" : "days"} strong
+                {streak} {streak === 1 ? t('med.dayStrong') : t('med.daysStrong')}
               </span>
             </div>
             <Progress value={progressPercentage} className="h-2" />
             <Link to="/medication-history" className="block">
               <Button variant="ghost" size="sm" className="w-full">
                 <TrendingUp className="h-4 w-4 mr-2" />
-                View Full History
+                {t('med.viewHistory')}
               </Button>
             </Link>
           </div>
@@ -167,7 +169,7 @@ export const MedicationTracker = ({ userId }: MedicationTrackerProps) => {
 
         {!userId && (
           <p className="text-xs text-muted-foreground text-center pt-2">
-            Sign in to track your health routine
+            {t('med.signInPrompt')}
           </p>
         )}
       </div>

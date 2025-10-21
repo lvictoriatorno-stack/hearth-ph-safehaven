@@ -5,9 +5,11 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export const EmergencyExit = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const handleEmergencyExit = () => {
     navigate("/safe");
@@ -25,7 +27,7 @@ export const EmergencyExit = () => {
         </button>
       </TooltipTrigger>
       <TooltipContent side="left" className="max-w-xs">
-        <p className="text-sm">Tap this if you need to quickly hide Hearth.</p>
+        <p className="text-sm">{t('emergency.tooltip')}</p>
       </TooltipContent>
     </Tooltip>
   );

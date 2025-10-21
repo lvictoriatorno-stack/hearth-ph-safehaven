@@ -1,5 +1,6 @@
 import { Pill, Clock, Circle } from "lucide-react";
 import { format } from "date-fns";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface DayStatus {
   date: Date;
@@ -11,6 +12,21 @@ interface WeeklyTimelineProps {
 }
 
 export const WeeklyTimeline = ({ days }: WeeklyTimelineProps) => {
+  const { t } = useLanguage();
+  
+  const getDayLabel = (date: Date) => {
+    const dayOfWeek = format(date, 'EEE').toLowerCase();
+    const dayMap: Record<string, string> = {
+      'mon': 'day.mon',
+      'tue': 'day.tue',
+      'wed': 'day.wed',
+      'thu': 'day.thu',
+      'fri': 'day.fri',
+      'sat': 'day.sat',
+      'sun': 'day.sun',
+    };
+    return t(dayMap[dayOfWeek] || dayOfWeek);
+  };
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "taken":
@@ -50,7 +66,9 @@ export const WeeklyTimeline = ({ days }: WeeklyTimelineProps) => {
               {getStatusIcon(day.status)}
             </div>
             <div className="text-center">
-              <p className="text-xs font-medium">{format(day.date, "EEE")}</p>
+              <span className="text-xs font-medium text-muted-foreground">
+                {getDayLabel(day.date)}
+              </span>
               <p className="text-xs text-muted-foreground">
                 {format(day.date, "d")}
               </p>

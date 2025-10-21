@@ -1,17 +1,20 @@
 import { Home, MessageCircle, BookOpen, Heart, Shield } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/contexts/LanguageContext";
 
-const navItems = [
-  { path: "/home", icon: Home, label: "Home" },
-  { path: "/threads", icon: MessageCircle, label: "Threads" },
-  { path: "/learn", icon: BookOpen, label: "Learn" },
-  { path: "/reflect", icon: Heart, label: "Reflect" },
-  { path: "/crisis", icon: Shield, label: "Crisis" },
+const getNavItems = (t: (key: string) => string) => [
+  { path: "/home", icon: Home, label: t('nav.home') },
+  { path: "/threads", icon: MessageCircle, label: t('nav.threads') },
+  { path: "/learn", icon: BookOpen, label: t('nav.learn') },
+  { path: "/reflect", icon: Heart, label: t('nav.reflect') },
+  { path: "/crisis", icon: Shield, label: t('nav.crisis') },
 ];
 
 export const BottomNav = () => {
   const location = useLocation();
+  const { t } = useLanguage();
+  const navItems = getNavItems(t);
   
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border z-50 safe-area-bottom">

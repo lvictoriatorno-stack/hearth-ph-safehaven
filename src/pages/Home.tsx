@@ -4,14 +4,17 @@ import { MoodSelector } from "@/components/MoodSelector";
 import { MedicationTracker } from "@/components/MedicationTracker";
 import { EmergencyExit } from "@/components/EmergencyExit";
 import { BottomNav } from "@/components/BottomNav";
+import { LanguageSelector } from "@/components/LanguageSelector";
 import { Heart, Shield, BookOpen, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useLanguage } from "@/contexts/LanguageContext";
 import heroImage from "@/assets/hero-sanctuary.jpg";
 
 export default function Home() {
   const [userId, setUserId] = useState<string | undefined>();
+  const { t } = useLanguage();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -36,12 +39,15 @@ export default function Home() {
         style={{ backgroundImage: `url(${heroImage})` }}
       >
         <div className="absolute inset-0 bg-gradient-to-b from-background/20 to-background/80" />
+        <div className="absolute top-4 right-16 z-20">
+          <LanguageSelector />
+        </div>
         <div className="relative text-center px-6 z-10">
           <h1 className="text-4xl font-bold mb-2 text-white drop-shadow-lg">
-            Welcome to Hearth
+            {t('home.greeting')}
           </h1>
           <p className="text-lg text-white/90 drop-shadow-md">
-            Your safe space. Your sanctuary.
+            {t('home.subtitle')}
           </p>
         </div>
       </div>
