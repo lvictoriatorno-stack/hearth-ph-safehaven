@@ -14,7 +14,7 @@ export const LanguageSelector = () => {
   const languages = [
     { code: 'en' as const, label: 'English', flag: '🇺🇸' },
     { code: 'tl' as const, label: 'Tagalog', flag: '🇵🇭' },
-    { code: 'taglish' as const, label: 'Taglish', flag: '🇵🇭🇺🇸' },
+    { code: 'ceb' as const, label: 'Cebuano', flag: '🇵🇭' },
   ];
 
   const currentLang = languages.find(l => l.code === language);
@@ -27,7 +27,7 @@ export const LanguageSelector = () => {
           <span className="hidden sm:inline">{currentLang?.flag}</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" className="bg-popover">
         {languages.map((lang) => (
           <DropdownMenuItem
             key={lang.code}

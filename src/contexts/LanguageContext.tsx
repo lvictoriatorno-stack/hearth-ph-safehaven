@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-type Language = 'en' | 'tl' | 'taglish';
+type Language = 'en' | 'tl' | 'ceb';
 
 interface LanguageContextType {
   language: Language;
@@ -8,7 +8,7 @@ interface LanguageContextType {
   t: (key: string) => string;
 }
 
-const translations = {
+const translations: Record<Language, Record<string, string>> = {
   en: {
     // Home page
     'home.greeting': 'Welcome to Hearth',
@@ -153,77 +153,77 @@ const translations = {
     'status.reminder': 'May Paalala',
     'status.missed': 'Hindi Nainom',
   },
-  taglish: {
+  ceb: {
     // Home page
-    'home.greeting': 'Welcome sa Hearth',
-    'home.subtitle': 'Your safe space para sa wellness at support',
-    'home.mood.title': 'Kumusta ka ngayong araw?',
-    'home.mood.great': 'Great',
-    'home.mood.good': 'Good',
-    'home.mood.okay': 'Okay',
-    'home.mood.struggling': 'Struggling',
-    'home.mood.needSupport': 'Need Support',
-    'home.mood.supportMessage': "Okay lang to reach out. Hindi ka nag-iisa. 💗",
-    'home.mood.thanksMessage': 'Thank you for sharing. Your feelings matter.',
+    'home.greeting': 'Maayong pag-abot sa Hearth',
+    'home.subtitle': 'Ang imong luwas nga luna para sa kaayohan ug suporta',
+    'home.mood.title': 'Kumusta ka karon nga adlaw?',
+    'home.mood.great': 'Maayo kaayo',
+    'home.mood.good': 'Maayo',
+    'home.mood.okay': 'Okay ra',
+    'home.mood.struggling': 'Naglisod',
+    'home.mood.needSupport': 'Nagkinahanglan og Tabang',
+    'home.mood.supportMessage': 'Okay ra mangayo og tabang. Dili ka mag-inusara. 💗',
+    'home.mood.thanksMessage': 'Salamat sa pagshare. Importante ang imong gibati.',
     
     // Medication Tracker
-    'med.title': 'Your Health Routine',
-    'med.subtitle': 'Nainom na ba ang ART today?',
-    'med.taken': 'Oo, nainom ko na',
-    'med.takenToday': 'Taken today',
-    'med.remindLater': 'Remind me later',
-    'med.streak': 'Adherence streak',
-    'med.daysStrong': 'days strong',
-    'med.dayStrong': 'day strong',
-    'med.viewHistory': 'View Full History',
-    'med.signInPrompt': 'Sign in para ma-track ang health routine mo',
-    'med.successTitle': 'Great job!',
-    'med.successMessage': 'Your health routine matters. Keep it up!',
-    'med.reminderTitle': 'Reminder set',
-    'med.reminderMessage': 'Gentle reminder: staying consistent keeps you strong.',
+    'med.title': 'Ang Imong Kaayohan nga Rutina',
+    'med.subtitle': 'Nainom na ba ang ART karon nga adlaw?',
+    'med.taken': 'Oo, nainom na nako',
+    'med.takenToday': 'Nainom na karon nga adlaw',
+    'med.remindLater': 'Pahinumdomi ko unya',
+    'med.streak': 'Sunod-sunod nga adlaw',
+    'med.daysStrong': 'ka adlaw nga kusog',
+    'med.dayStrong': 'ka adlaw nga kusog',
+    'med.viewHistory': 'Tan-awa ang Tibuok Kasaysayan',
+    'med.signInPrompt': 'Mag-sign in aron ma-track ang imong kaayohan nga rutina',
+    'med.successTitle': 'Maayo kaayo!',
+    'med.successMessage': 'Importante ang imong kaayohan nga rutina. Padayona!',
+    'med.reminderTitle': 'Na-set na ang pahinumdom',
+    'med.reminderMessage': 'Hinay nga pahinumdom: ang pagka-consistent nagpalig-on nimo.',
     
     // Medication History
-    'medHistory.title': 'Your Health Progress',
-    'medHistory.subtitle': 'Small steps, strong foundations. Bawat dose ay importante.',
-    'medHistory.daysStrong': 'Days Strong',
-    'medHistory.affirmation1': 'Healing hindi linear — consistency builds courage.',
-    'medHistory.affirmation2': 'Every step forward matters, kahit gaano kaliit.',
-    'medHistory.affirmation3': 'Your commitment sa sarili mo is powerful.',
-    'medHistory.affirmation4': 'Progress, not perfection. You\'re doing great.',
-    'medHistory.affirmation5': 'Taking care of yourself is an act of strength.',
-    'medHistory.weeklyProgress': 'Weekly Progress',
-    'medHistory.monthlySummary': 'Monthly Summary',
-    'medHistory.completedThisMonth': 'You completed',
-    'medHistory.thisMonth': 'this month',
-    'medHistory.viewDetails': 'View Details',
-    'medHistory.needHelp': 'Need help staying on track?',
-    'medHistory.peerTips': 'Anonymous Peer Tips',
-    'medHistory.setReminders': 'Set Reminder Preferences',
-    'medHistory.backToCheckIn': 'Back sa Daily Check-in',
+    'medHistory.title': 'Ang Imong Pag-uswag sa Kaayohan',
+    'medHistory.subtitle': 'Gamay nga tikang, lig-on nga pundasyon. Matag dosis importante.',
+    'medHistory.daysStrong': 'Adlaw nga Lig-on',
+    'medHistory.affirmation1': 'Ang pagkaayo dili tul-id — ang pagka-consistent nagbuild og kaisog.',
+    'medHistory.affirmation2': 'Matag tikang paabante importante, bisan unsa ka gamay.',
+    'medHistory.affirmation3': 'Ang imong commitment sa kaugalingon gamhanan.',
+    'medHistory.affirmation4': 'Pag-uswag, dili perpeksyon. Maayo ka.',
+    'medHistory.affirmation5': 'Ang pag-atiman sa kaugalingon usa ka buhat sa kalig-on.',
+    'medHistory.weeklyProgress': 'Pag-uswag sa Semana',
+    'medHistory.monthlySummary': 'Sumaryo sa Bulan',
+    'medHistory.completedThisMonth': 'Nakompleto nimo ang',
+    'medHistory.thisMonth': 'karong bulana',
+    'medHistory.viewDetails': 'Tan-awa ang mga Detalye',
+    'medHistory.needHelp': 'Nagkinahanglan og tabang aron magpabilin sa track?',
+    'medHistory.peerTips': 'Mga Tip gikan sa Kapareha (Walay Ngalan)',
+    'medHistory.setReminders': 'I-set ang mga Preference sa Pahinumdom',
+    'medHistory.backToCheckIn': 'Balik sa Daily Check-in',
     
     // Bottom Nav
     'nav.home': 'Home',
     'nav.threads': 'Threads',
-    'nav.learn': 'Learn',
-    'nav.reflect': 'Reflect',
-    'nav.crisis': 'Crisis',
+    'nav.learn': 'Pagkat-on',
+    'nav.reflect': 'Pagpamalandong',
+    'nav.crisis': 'Krisis',
     
     // Emergency Exit
-    'emergency.tooltip': 'I-tap ito if you need to quickly hide Hearth.',
+    'emergency.tooltip': 'I-tap kini kung kinahanglan nimong dali nga itago ang Hearth.',
     
     // Days of week
-    'day.mon': 'Mon',
-    'day.tue': 'Tue',
-    'day.wed': 'Wed',
-    'day.thu': 'Thu',
-    'day.fri': 'Fri',
-    'day.sat': 'Sat',
-    'day.sun': 'Sun',
+    'day.mon': 'Lun',
+    'day.tue': 'Mar',
+    'day.wed': 'Miy',
+    'day.thu': 'Huw',
+    'day.fri': 'Biy',
+    'day.sat': 'Sab',
+    'day.sun': 'Dom',
     
     // Status
-    'status.taken': 'Taken',
-    'status.reminder': 'May Reminder',
-    'status.missed': 'Missed',
+    'status.taken': 'Nainom',
+    'status.reminder': 'May Pahinumdom',
+    'status.missed': 'Wala Nainom',
   },
 };
 
@@ -232,6 +232,8 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [language, setLanguageState] = useState<Language>(() => {
     const saved = localStorage.getItem('hearth-language');
+    // Handle migration from old 'taglish' value
+    if (saved === 'taglish') return 'en';
     return (saved as Language) || 'en';
   });
 
