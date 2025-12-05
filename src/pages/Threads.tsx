@@ -8,11 +8,12 @@ import { Plus, Shield } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import type { Thread, UserAlias, MoodType, ThreadTag } from "@/types/database";
 
 export default function Threads() {
-  const [threads, setThreads] = useState<any[]>([]);
+  const [threads, setThreads] = useState<Thread[]>([]);
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
-  const [userAlias, setUserAlias] = useState<any>(null);
+  const [userAlias, setUserAlias] = useState<UserAlias | null>(null);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
@@ -26,19 +27,17 @@ export default function Threads() {
   const checkAuth = async () => {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
-      // Not authenticated, redirect to onboarding
       navigate("/");
       return;
     }
 
     setCurrentUserId(session.user.id);
 
-    // Get user's alias
     const { data: alias } = await supabase
       .from("user_aliases")
       .select("*")
       .eq("user_id", session.user.id)
-      .single();
+      .single() as { data: UserAlias | null; error: any };
 
     setUserAlias(alias);
   };
@@ -54,7 +53,7 @@ export default function Threads() {
         `)
         .eq("is_approved", true)
         .eq("is_under_review", false)
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false }) as { data: Thread[] | null; error: any };
 
       if (error) throw error;
 
@@ -98,15 +97,15 @@ export default function Threads() {
 
       const containsFlaggedWords = checkForFlaggedWords(content);
 
-      const { error } = await supabase.from("threads").insert([{
+      const { error } = await supabase.from("threads").insert({
         user_id: session.user.id,
         alias_id: userAlias.id,
         content,
-        mood: mood as any,
-        tag: tag as any,
+        mood: mood as MoodType,
+        tag: tag as ThreadTag,
         is_flagged: containsFlaggedWords,
         is_under_review: containsFlaggedWords,
-      }]);
+      } as any);
 
       if (error) throw error;
 
@@ -138,7 +137,7 @@ export default function Threads() {
       const { error } = await supabase
         .from("threads")
         .delete()
-        .eq("id", threadId);
+        .eq("id", threadId) as { error: any };
 
       if (error) throw error;
 
@@ -167,7 +166,7 @@ export default function Threads() {
         thread_id: threadId,
         reporter_user_id: session.user.id,
         reason: "User reported",
-      });
+      } as any);
 
       if (error) throw error;
 
@@ -224,7 +223,7 @@ export default function Threads() {
               <ThreadCard
                 key={thread.id}
                 id={thread.id}
-                alias={thread.user_aliases.alias}
+                alias={thread.user_aliases?.alias || 'Anonymous'}
                 content={thread.content}
                 mood={thread.mood}
                 tag={thread.tag}

@@ -8,8 +8,9 @@ import { EmergencyExit } from "@/components/EmergencyExit";
 import { Heart, ChevronLeft, Settings } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { subDays, startOfDay, endOfDay, differenceInDays } from "date-fns";
+import { subDays, startOfDay, endOfDay } from "date-fns";
 import { useLanguage } from "@/contexts/LanguageContext";
+import type { MedicationLog } from "@/types/database";
 import {
   Collapsible,
   CollapsibleContent,
@@ -71,7 +72,7 @@ export default function MedicationHistory() {
       .from("medication_logs")
       .select("taken_at")
       .eq("user_id", userId)
-      .order("taken_at", { ascending: false });
+      .order("taken_at", { ascending: false }) as { data: Pick<MedicationLog, 'taken_at'>[] | null; error: any };
 
     if (error || !data || data.length === 0) {
       setStreak(0);
@@ -110,13 +111,13 @@ export default function MedicationHistory() {
       const dayStart = startOfDay(date);
       const dayEnd = endOfDay(date);
 
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("medication_logs")
         .select("*")
         .eq("user_id", userId)
         .gte("taken_at", dayStart.toISOString())
         .lte("taken_at", dayEnd.toISOString())
-        .maybeSingle();
+        .maybeSingle() as { data: MedicationLog | null; error: any };
 
       let status: "taken" | "reminder" | "missed" = "missed";
       if (data) {
@@ -140,7 +141,7 @@ export default function MedicationHistory() {
       .from("medication_logs")
       .select("taken_at")
       .eq("user_id", userId)
-      .gte("taken_at", thirtyDaysAgo.toISOString());
+      .gte("taken_at", thirtyDaysAgo.toISOString()) as { data: Pick<MedicationLog, 'taken_at'>[] | null; error: any };
 
     if (!error && data) {
       const percentage = Math.round((data.length / 30) * 100);
