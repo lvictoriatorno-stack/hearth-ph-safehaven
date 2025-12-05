@@ -7,6 +7,7 @@ import { ArrowLeft, Heart, Send, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
+import type { Thread, ThreadReply, UserAlias, MoodType } from "@/types/database";
 
 const moodEmojis: Record<string, string> = {
   hopeful: "🌤",
@@ -37,11 +38,11 @@ const supportiveMessages = [
 export default function ThreadDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [thread, setThread] = useState<any>(null);
-  const [replies, setReplies] = useState<any[]>([]);
+  const [thread, setThread] = useState<Thread | null>(null);
+  const [replies, setReplies] = useState<ThreadReply[]>([]);
   const [replyContent, setReplyContent] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [userAlias, setUserAlias] = useState<any>(null);
+  const [userAlias, setUserAlias] = useState<UserAlias | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -61,7 +62,7 @@ export default function ThreadDetail() {
       .from("user_aliases")
       .select("*")
       .eq("user_id", session.user.id)
-      .single();
+      .single() as { data: UserAlias | null; error: any };
 
     setUserAlias(alias);
   };
@@ -75,7 +76,7 @@ export default function ThreadDetail() {
           user_aliases!inner(alias)
         `)
         .eq("id", id)
-        .single();
+        .single() as { data: Thread | null; error: any };
 
       if (error) throw error;
       setThread(data);
@@ -100,7 +101,7 @@ export default function ThreadDetail() {
           user_aliases!inner(alias)
         `)
         .eq("thread_id", id)
-        .order("created_at", { ascending: true });
+        .order("created_at", { ascending: true }) as { data: ThreadReply[] | null; error: any };
 
       if (error) throw error;
       setReplies(data || []);
@@ -114,7 +115,7 @@ export default function ThreadDetail() {
       const { error } = await supabase
         .from("threads")
         .delete()
-        .eq("id", id);
+        .eq("id", id) as { error: any };
 
       if (error) throw error;
 
@@ -139,7 +140,7 @@ export default function ThreadDetail() {
       const { error } = await supabase
         .from("thread_replies")
         .delete()
-        .eq("id", replyId);
+        .eq("id", replyId) as { error: any };
 
       if (error) throw error;
 
@@ -166,13 +167,13 @@ export default function ThreadDetail() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) throw new Error("Not authenticated");
 
-      const { error } = await supabase.from("thread_replies").insert([{
+      const { error } = await supabase.from("thread_replies").insert({
         thread_id: id,
         user_id: session.user.id,
         alias_id: userAlias.id,
         content: replyContent,
-        mood: "hopeful" as any,
-      }]);
+        mood: "hopeful" as MoodType,
+      } as any);
 
       if (error) throw error;
 
@@ -227,7 +228,7 @@ export default function ThreadDetail() {
         <Card className="p-4 bg-primary/5">
           <div className="flex justify-between items-start mb-2">
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-sm">{thread.user_aliases.alias}</span>
+              <span className="font-semibold text-sm">{thread.user_aliases?.alias || 'Anonymous'}</span>
               <span className="text-xl">{moodEmojis[thread.mood]}</span>
               <span className="text-xs text-muted-foreground">{moodLabels[thread.mood]}</span>
             </div>
@@ -277,7 +278,7 @@ export default function ThreadDetail() {
             <Card key={reply.id} className="p-4">
               <div className="flex justify-between items-start mb-2">
                 <div className="flex items-center gap-2">
-                  <span className="font-semibold text-sm">{reply.user_aliases.alias}</span>
+                  <span className="font-semibold text-sm">{reply.user_aliases?.alias || 'Anonymous'}</span>
                   <span className="text-xs text-muted-foreground">
                     {formatDistanceToNow(new Date(reply.created_at), { addSuffix: true })}
                   </span>

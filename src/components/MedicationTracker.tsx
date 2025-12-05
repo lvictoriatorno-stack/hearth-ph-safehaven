@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
+import type { MedicationLog } from "@/types/database";
 
 interface MedicationTrackerProps {
   userId?: string;
@@ -37,7 +38,7 @@ export const MedicationTracker = ({ userId }: MedicationTrackerProps) => {
       .select("*")
       .eq("user_id", userId)
       .gte("taken_at", today.toISOString())
-      .maybeSingle();
+      .maybeSingle() as { data: MedicationLog | null; error: any };
 
     if (!error && data) {
       setTakenToday(true);
@@ -51,7 +52,7 @@ export const MedicationTracker = ({ userId }: MedicationTrackerProps) => {
       .from("medication_logs")
       .select("taken_at")
       .eq("user_id", userId)
-      .order("taken_at", { ascending: false });
+      .order("taken_at", { ascending: false }) as { data: Pick<MedicationLog, 'taken_at'>[] | null; error: any };
 
     if (error || !data || data.length === 0) {
       setStreak(0);
@@ -87,7 +88,7 @@ export const MedicationTracker = ({ userId }: MedicationTrackerProps) => {
     setLoading(true);
     const { error } = await supabase
       .from("medication_logs")
-      .insert({ user_id: userId });
+      .insert({ user_id: userId } as any);
 
     if (error) {
       toast({
