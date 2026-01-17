@@ -4,10 +4,11 @@ import { Card } from "@/components/ui/card";
 import { BottomNav } from "@/components/BottomNav";
 import { ThreadCard } from "@/components/ThreadCard";
 import { PostModal } from "@/components/PostModal";
-import { Plus, Shield } from "lucide-react";
+import { Plus, Shield, Eye, EyeOff } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import { useAccessibility } from "@/contexts/AccessibilityContext";
 import type { Thread, UserAlias, MoodType, ThreadTag } from "@/types/database";
 
 export default function Threads() {
@@ -18,6 +19,11 @@ export default function Threads() {
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { calmView, setCalmView } = useAccessibility();
+
+  // Calm view shows fewer posts
+  const CALM_VIEW_LIMIT = 3;
+  const displayedThreads = calmView ? threads.slice(0, CALM_VIEW_LIMIT) : threads;
 
   useEffect(() => {
     checkAuth();
@@ -185,11 +191,32 @@ export default function Threads() {
   };
 
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="min-h-screen bg-background pb-24">
       {/* Header */}
       <header className="bg-card border-b border-border sticky top-0 z-10">
         <div className="max-w-lg mx-auto px-4 py-4">
-          <h1 className="text-2xl font-bold text-primary mb-1">Community Threads</h1>
+          <div className="flex items-center justify-between mb-1">
+            <h1 className="text-2xl font-bold text-primary">Community Threads</h1>
+            <Button
+              variant={calmView ? "default" : "outline"}
+              size="sm"
+              onClick={() => setCalmView(!calmView)}
+              className="gap-2"
+              aria-pressed={calmView}
+            >
+              {calmView ? (
+                <>
+                  <EyeOff className="h-4 w-4" aria-hidden="true" />
+                  <span>Calm View</span>
+                </>
+              ) : (
+                <>
+                  <Eye className="h-4 w-4" aria-hidden="true" />
+                  <span>Calm View</span>
+                </>
+              )}
+            </Button>
+          </div>
           <p className="text-sm text-muted-foreground">
             A safe space for sharing, listening, and healing.
           </p>
@@ -197,10 +224,25 @@ export default function Threads() {
       </header>
 
       <main className="max-w-lg mx-auto px-4 py-6 space-y-4">
+        {/* Calm View Notice */}
+        {calmView && (
+          <Card className="p-4 bg-primary/5 border-primary/20">
+            <div className="flex gap-3 items-center">
+              <EyeOff className="h-5 w-5 text-primary flex-shrink-0" aria-hidden="true" />
+              <div>
+                <p className="text-sm font-medium">Calm View is on</p>
+                <p className="text-xs text-muted-foreground">
+                  Showing fewer posts to protect your peace. This is self-care, not a restriction.
+                </p>
+              </div>
+            </div>
+          </Card>
+        )}
+
         {/* Safety Notice */}
         <Card className="p-4 bg-accent/30 border-primary/20">
           <div className="flex gap-3">
-            <Shield className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+            <Shield className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" aria-hidden="true" />
             <div>
               <h3 className="font-semibold text-sm mb-1">Stay Safe</h3>
               <p className="text-xs text-muted-foreground">
@@ -219,7 +261,7 @@ export default function Threads() {
           </div>
         ) : (
           <div className="space-y-3">
-            {threads.map((thread) => (
+            {displayedThreads.map((thread) => (
               <ThreadCard
                 key={thread.id}
                 id={thread.id}
@@ -236,6 +278,22 @@ export default function Threads() {
                 onDelete={() => handleDelete(thread.id)}
               />
             ))}
+            
+            {/* Show more button in calm view */}
+            {calmView && threads.length > CALM_VIEW_LIMIT && (
+              <Card className="p-4 text-center">
+                <p className="text-sm text-muted-foreground mb-3">
+                  {threads.length - CALM_VIEW_LIMIT} more posts hidden
+                </p>
+                <Button 
+                  variant="soft" 
+                  size="sm"
+                  onClick={() => setCalmView(false)}
+                >
+                  Show all posts
+                </Button>
+              </Card>
+            )}
           </div>
         )}
       </main>
@@ -246,8 +304,10 @@ export default function Threads() {
         className="fixed bottom-24 right-4 h-14 w-14 rounded-full shadow-lg"
         variant="sanctuary"
         size="icon"
+        aria-label="Create new post"
       >
-        <Plus className="h-6 w-6" />
+        <Plus className="h-6 w-6" aria-hidden="true" />
+        <span className="sr-only">Create new post</span>
       </Button>
 
       <PostModal
