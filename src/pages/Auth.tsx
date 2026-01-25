@@ -35,7 +35,7 @@ export default function Auth() {
           description: "Welcome to Hearth. Your anonymous alias has been created.",
         });
 
-        navigate("/threads");
+        navigate("/home");
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,
@@ -49,7 +49,7 @@ export default function Auth() {
           description: "You've been signed in successfully.",
         });
 
-        navigate("/threads");
+        navigate("/home");
       }
     } catch (error: any) {
       toast({
