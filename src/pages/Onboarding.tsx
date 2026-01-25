@@ -1,10 +1,11 @@
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { useNavigate } from "react-router-dom";
-import { Shield, Heart, Users, User, Smile, Star, Sparkles, Sun, Moon, Upload } from "lucide-react";
+import { useNavigate, Link } from "react-router-dom";
+import { Shield, Heart, Users, User, Smile, Star, Sparkles, Sun, Moon, Upload, Accessibility } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import iconCare from "@/assets/icon-care.png";
 
 export default function Onboarding() {
@@ -41,7 +42,23 @@ export default function Onboarding() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4 relative">
+      {/* Discreet accessibility access */}
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Link
+            to="/settings"
+            className="absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center bg-card border border-border hover:bg-accent transition-colors"
+            aria-label="Accessibility settings"
+          >
+            <Accessibility className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
+          </Link>
+        </TooltipTrigger>
+        <TooltipContent side="left">
+          <p className="text-sm">Accessibility settings</p>
+        </TooltipContent>
+      </Tooltip>
+
       <div className="max-w-md w-full space-y-6 fade-in-up">
         {/* Logo/Icon */}
         <div className="text-center">

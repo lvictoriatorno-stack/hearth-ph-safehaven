@@ -3,10 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Heart } from "lucide-react";
+import { Heart, Accessibility } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export default function Auth() {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -62,7 +63,23 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4 relative">
+      {/* Discreet accessibility access */}
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Link
+            to="/settings"
+            className="absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center bg-card border border-border hover:bg-accent transition-colors"
+            aria-label="Accessibility settings"
+          >
+            <Accessibility className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
+          </Link>
+        </TooltipTrigger>
+        <TooltipContent side="left">
+          <p className="text-sm">Accessibility settings</p>
+        </TooltipContent>
+      </Tooltip>
+
       <Card className="w-full max-w-md p-8">
         <div className="flex flex-col items-center mb-8">
           <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
