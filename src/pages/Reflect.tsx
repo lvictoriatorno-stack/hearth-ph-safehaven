@@ -5,6 +5,7 @@ import { BottomNav } from "@/components/BottomNav";
 import { Calendar, TrendingUp, Heart, Sparkles, ChevronRight } from "lucide-react";
 import { useOfflineStorage } from "@/hooks/useOfflineStorage";
 import { useAccessibility } from "@/contexts/AccessibilityContext";
+import { CarePathwayCard } from "@/components/CarePathwayCard";
 
 interface MoodOption {
   emoji: string;
@@ -220,6 +221,9 @@ export default function Reflect() {
             Share Request (Optional)
           </Button>
         </Card>
+
+        {/* Care Pathway - Discreet, optional access to testing/treatment info */}
+        <CarePathwayCard />
       </div>
 
       <BottomNav />
