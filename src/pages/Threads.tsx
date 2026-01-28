@@ -84,7 +84,27 @@ export default function Threads() {
     ];
     
     const lowerText = text.toLowerCase();
-    return flaggedWords.some(word => lowerText.includes(word));
+    
+    // Check for flagged keywords
+    const hasKeyword = flaggedWords.some(word => lowerText.includes(word));
+    if (hasKeyword) return true;
+    
+    // Detect phone number patterns (7+ consecutive digits, with optional separators)
+    // Matches: 09235616254, 0919-566-7777, 0919 566 7777, +63 919 566 7777, etc.
+    const phonePatterns = [
+      /\+?\d[\d\s\-\.]{6,}\d/,  // 7+ digits with optional separators
+      /\b\d{3}[\s\-\.]?\d{3,4}[\s\-\.]?\d{4}\b/,  // XXX-XXX-XXXX or XXX-XXXX-XXXX
+      /\b0\d{10,11}\b/,  // Philippine mobile numbers (09XXXXXXXXX)
+    ];
+    const hasPhoneNumber = phonePatterns.some(pattern => pattern.test(text));
+    if (hasPhoneNumber) return true;
+    
+    // Detect email addresses
+    const emailPattern = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
+    const hasEmail = emailPattern.test(text);
+    if (hasEmail) return true;
+    
+    return false;
   };
 
   const handlePostThread = async (content: string, mood: string, tag: string) => {
